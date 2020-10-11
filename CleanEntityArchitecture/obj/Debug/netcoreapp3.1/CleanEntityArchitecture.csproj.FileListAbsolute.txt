@@ -1,0 +1,8 @@
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\bin\Debug\netcoreapp3.1\CleanEntityArchitecture.deps.json
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\bin\Debug\netcoreapp3.1\CleanEntityArchitecture.dll
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.AssemblyInfoInputs.cache
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.AssemblyInfo.cs
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\bin\Debug\netcoreapp3.1\CleanEntityArchitecture.pdb
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.csproj.CoreCompileInputs.cache
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.dll
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.pdb
