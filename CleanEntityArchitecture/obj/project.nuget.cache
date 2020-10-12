@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XnNAK06V02CqHKaAEjJPu8RzU9gAE3Ts2M4Un1skGSLN5Io8ZClWnZ74FzXiObJRz+bfCVAT8etjy6FMuCPExg==",
+  "dgSpecHash": "rsLSynoZvUJT3yNshY+5GSr1VcbQeiPPkXkjVLEotCMLkX82Vc8bL4wFmVnEtg/FBgKzNs30PQoJI7R8+pp9rA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
+  "projectFilePath": "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ajori\\.nuget\\packages\\automapper\\10.0.0\\automapper.10.0.0.nupkg.sha512",
     "C:\\Users\\ajori\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

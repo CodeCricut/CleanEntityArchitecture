@@ -6,3 +6,4 @@ C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\bin\
 C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.dll
 C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.pdb
 C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.csproj.CoreCompileInputs.cache
+C:\Users\ajori\source\repos\CleanEntityArchitecture\CleanEntityArchitecture\obj\Debug\netcoreapp3.1\CleanEntityArchitecture.csprojAssemblyReference.cache
