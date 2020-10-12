@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj": {}
+    "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj": {
+    "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
+        "projectUniqueName": "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
         "projectName": "CleanEntityArchitecture",
-        "projectPath": "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
+        "projectPath": "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\CleanEntityArchitecture.csproj",
         "packagesPath": "C:\\Users\\ajori\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ajori\\source\\repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\obj\\",
+        "outputPath": "C:\\Users\\ajori\\Source\\Repos\\CleanEntityArchitecture\\CleanEntityArchitecture\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ajori\\AppData\\Roaming\\NuGet\\NuGet.Config",
