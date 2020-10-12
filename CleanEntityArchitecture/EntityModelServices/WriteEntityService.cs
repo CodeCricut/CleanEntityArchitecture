@@ -1,8 +1,6 @@
 ﻿using CleanEntityArchitecture.Domain;
 using CleanEntityArchitecture.Helpers;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CleanEntityArchitecture.EntityModelServices

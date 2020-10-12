@@ -1,9 +1,7 @@
 ﻿using CleanEntityArchitecture.Domain;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CleanEntityArchitecture.Repository
@@ -20,8 +18,8 @@ namespace CleanEntityArchitecture.Repository
 
 		public virtual async Task<TEntity> AddEntityAsync(TEntity entity)
 		{
-				var addedEntity = (await Task.Run(() => _context.Set<TEntity>().Add(entity))).Entity;
-				return addedEntity;
+			var addedEntity = (await Task.Run(() => _context.Set<TEntity>().Add(entity))).Entity;
+			return addedEntity;
 		}
 
 		public virtual async Task<IEnumerable<TEntity>> AddEntititesAsync(List<TEntity> entities)
@@ -56,7 +54,7 @@ namespace CleanEntityArchitecture.Repository
 
 		public virtual async Task<bool> SaveChangesAsync()
 		{
-				return (await _context.SaveChangesAsync()) > 0;
+			return (await _context.SaveChangesAsync()) > 0;
 		}
 	}
 }

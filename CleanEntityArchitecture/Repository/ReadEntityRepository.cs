@@ -1,10 +1,8 @@
 ﻿using CleanEntityArchitecture.Domain;
 using CleanEntityArchitecture.Helpers;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CleanEntityArchitecture.Repository
@@ -37,7 +35,7 @@ namespace CleanEntityArchitecture.Repository
 
 		public virtual async Task<bool> SaveChangesAsync()
 		{
-				return (await _context.SaveChangesAsync()) > 0;
+			return (await _context.SaveChangesAsync()) > 0;
 		}
 
 		public virtual async Task<bool> VerifyExistsAsync(int id)

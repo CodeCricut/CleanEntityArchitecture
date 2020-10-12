@@ -1,26 +1,15 @@
-﻿using CleanEntityArchitecture.EntityModelServices;
-using CleanEntityArchitecture.Repository;
+﻿using CleanEntityArchitecture.Settings;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CleanEntityArchitecture.Helpers
 {
 	public static class EntityServiceExtensions
 	{
-		public static IServiceCollection AddEntityRepositories(this IServiceCollection services)
+		public static IServiceCollection ConfigureCleanEntityArchitecture(this IServiceCollection services, IConfiguration configuration)
 		{
 			return services
-				.AddScoped(typeof(IReadEntityRepository<>), typeof(ReadEntityRepository<>))
-				.AddScoped(typeof(IWriteEntityRepository<>), typeof(WriteEntityRepository<>));
-		}
-
-		public static IServiceCollection AddEntityModelServices(this IServiceCollection services)
-		{
-			return services
-				.AddScoped(typeof(IReadEntityService<,>), typeof(ReadEntityService<,>))
-				.AddScoped(typeof(IWriteEntityService<,>), typeof(WriteEntityService<,>));
+				.Configure<JwtSettings>(options => configuration.GetSection("JwtSettings"));
 		}
 	}
 }
