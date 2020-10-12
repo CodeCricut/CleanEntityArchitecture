@@ -34,7 +34,7 @@ namespace CleanEntityArchitecture.Authorization
 		{
 			if (_authorize)
 			{
-				var userId = (int)context.HttpContext.Items["UserId"];
+				var userId = context.HttpContext.Items["UserId"];
 				if (userId == null)
 				{
 					// the user is not yet logged in, return 401
