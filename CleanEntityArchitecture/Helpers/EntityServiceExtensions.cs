@@ -12,7 +12,8 @@ namespace CleanEntityArchitecture.Helpers
 			return services
 				.Configure<JwtSettings>(options => configuration.GetSection("JwtSettings").Bind(options))
 				.AddSingleton<IJwtHelper, JwtHelper>()
-				.AddScoped(typeof(IUserAuth<>), typeof(UserAuth<>));
+				.AddScoped(typeof(IUserAuth<>), typeof(UserAuth<>))
+				;
 		}
 	}
 }
