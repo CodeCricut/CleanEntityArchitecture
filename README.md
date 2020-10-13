@@ -25,10 +25,10 @@ purposes, but also ensures that each entity has a `Id` and `Deleted` property.
 
 To keep things clean, you must separate each entity into three classes, each for a different
 purpose:
-	* one inheriting from `DomainEntity`, which is you actual entity with the most properties in most cases.
-	* one inheriting from `PostModelDto`, which contains the properties the users are allowed
+* one inheriting from `DomainEntity`, which is you actual entity with the most properties in most cases.
+* one inheriting from `PostModelDto`, which contains the properties the users are allowed
 	to modify and create when posting or putting to a controller.
-	* one inheriting from `GetModelDto`, which contains the properties you wish to expose through
+* one inheriting from `GetModelDto`, which contains the properties you wish to expose through
 	the controller read actions.
 
 If required, you may choose to include multiple post or get DTOs for each entity.
@@ -224,8 +224,8 @@ to register an `IUserLoginRepository<TLoginModel, TUser>` implementation as a se
 ### IAuthenticateUserService
 The `IAuthenticateUserService<TLoginModel, TGetModel>` provides two methods used mostly by the 
 authentication controller: 
-	* `Task<TGetModel> LoginAsync(TLoginModel model)`
-	* `Task<TGetModel> GetAuthenticatedReturnModelAsync()`
+* `Task<TGetModel> LoginAsync(TLoginModel model)`
+* `Task<TGetModel> GetAuthenticatedReturnModelAsync()`
 
 A default implementation is not provided because behavior depends heavily on how authentication, but here
 is an example of how it could look if using a JWT approach:
