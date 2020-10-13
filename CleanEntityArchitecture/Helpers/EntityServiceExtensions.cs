@@ -13,7 +13,7 @@ namespace CleanEntityArchitecture.Helpers
 				.Configure<JwtSettings>(options => configuration.GetSection("JwtSettings").Bind(options))
 				.AddSingleton<IJwtHelper, JwtHelper>()
 				.AddScoped(typeof(IUserAuth<>), typeof(UserAuth<>))
-				;
+				.AddHttpContextAccessor();
 		}
 	}
 }

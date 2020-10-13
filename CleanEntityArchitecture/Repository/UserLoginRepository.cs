@@ -21,7 +21,7 @@ namespace CleanEntityArchitecture.Repository
 			_readUserRepo = readUserRepo;
 		}
 
-		public async Task<TUser> GetUserByCredentialsAsync(TLoginModel loginModel)
+		public virtual async Task<TUser> GetUserByCredentialsAsync(TLoginModel loginModel)
 		{
 			return await Task.Factory.StartNew(() =>
 			{
