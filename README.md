@@ -1,24 +1,24 @@
-﻿* CleanEntityArchitecutre
+﻿# CleanEntityArchitecutre
 This library provides you with some boilerplate that will help you build rather complex
 CRUD APIs and web projects without having to worry about the tedious details.
 
-** Features
+## Features
 JWT Authorization
 EF Core CRUD Repositories
 CRUD Controllers
 CRUD Helper Services
 
-** Installation
+## Installation
 Unfortunately, as this is a library still being tested, you can only install it by cloning
 the repository:
 `git clone https://github.com/CodeCricut/CleanEntityArchitecture`
 
-*** Setup
+### Setup
 The default services necessary to run this library can be registered in the `ConfigureServices` method of 
 `Startup.cs` with a call to `Services.ConfigureCleanEntityArchitecture(Configuration)`.
 
 
-*** Domain
+### Domain
 You may create an EF Core `DbContext` without utilizing the library, but any models in the
 `DbSet`s must be inherited from `DomainEntity`. This is mostly for generic constraint
 purposes, but also ensures that each entity has a `Id` and `Deleted` property.
@@ -60,7 +60,7 @@ public class GetNoteModel : GetModelDto
 	public string Text { get; set; }
 }
 ```
-*** Repositories
+### Repositories
 To create a read repository for an entity, you can either inherit from `ReadEntityRepository<TEntity>` or
 implement `IReadEntityRepository<TEntity>`. 
 
@@ -96,7 +96,7 @@ servies.AddScoped<IReadEntityRepository<Note>, ReadNoteRepository>()
 		.AddScoped<IWriteEntityRepository<Note>, WriteNoteRepository>();
 ```
 
-*** Helper Services
+### Helper Services
 To separate concerns, most of the code not related to routing and model binding extracted out of the controllers
 and into helper services.
 
@@ -151,7 +151,7 @@ servies.AddScoped<IReadEntityService<Note>, ReadNoteService>()
 		.AddScoped<IWriteEntityService<Note>, WriteNoteService>();
 ```
 
-*** Controllers
+### Controllers
 Default CRUD controllers are provided to facilitate routing and model binding.
 
 Create a read controller by inheriting from `ReadController<TEntity, TGetEntityModel>` or implementing
@@ -195,10 +195,10 @@ public class WriteNoteController : WriteController<Note, PostNoteModel, GetNoteM
 As with other API projects, controllers can be registered with `services.AddControllers()` and
 `app.UseEndpoints(endpoints => endpoints.MapControllers())`.
 
-** Authentication
+## Authentication
 A number of services, controllers, and middleware are configured to make authentication a breeze.
 
-*** User Domain
+### User Domain
 Starting again with the domain, two classes are provided which can be used or inherited from.
 
 `BaseUser` should be inherited from by the user entity. For example,
@@ -214,14 +214,14 @@ the properties of `DomainEntity` and `Username` and `Password`.
 
 `LoginModel` is used as a generic type constraint, and contains `Username` and `Password` properties.
 
-*** UserLoginRepository
+### UserLoginRepository
 To facilitary default login capability, the `UserLoginRepository` is used. You may inherit from this class,
 or implement `IUserLoginRepository` if custom login behavior is required. If not, then you simply need
 to register an `IUserLoginRepository<TLoginModel, TUser>` implementation as a service:
 
 `services.AddScoped<IUserLoginRepository<LoginModel, User>, UserLoginRepository<LoginModel, User>>()`
 
-*** IAuthenticateUserService
+### IAuthenticateUserService
 The `IAuthenticateUserService<TLoginModel, TGetModel>` provides two methods used mostly by the 
 authentication controller: 
 	* `Task<TGetModel> LoginAsync(TLoginModel model)`
@@ -279,11 +279,11 @@ public class AuthenticateUserService : IAuthenticateUserService<LoginModel, GetU
 	}
 ```
 
-*** Authentication Controllers
+### Authentication Controllers
 You can inherit from `AuthenticateUserController` or implement `IAuthenticateUserController`. They contain
 login actions and actions for getting the authenticate user model.
 
-*** Other Authorization Goodies
+### Other Authorization Goodies
 Other authorization related classes are in the `CleanEntityArchitecture.Authorization` namespace.
 
 The `AuthorizeAttribute` can be used to decorate controller classes or actions and require that incoming
