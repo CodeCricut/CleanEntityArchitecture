@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CleanEntityArchitecture.Domain
 {
-	public abstract class BaseUser : DomainEntity
+	public class LoginModel
 	{
-		[Required]
 		public string Username { get; set; }
-		[Required]
 		public string Password { get; set; }
 	}
 }
