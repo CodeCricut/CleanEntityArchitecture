@@ -17,7 +17,7 @@ namespace CleanEntityArchitecture.Authorization
 			_appSettings = options.Value;
 		}
 
-		public string GenerateJwtToken(BaseUser user)
+		public Jwt GenerateJwtToken(BaseUser user)
 		{
 			// generate token that is valid for 7 days
 			var tokenHandler = new JwtSecurityTokenHandler();
@@ -28,8 +28,10 @@ namespace CleanEntityArchitecture.Authorization
 				Expires = DateTime.UtcNow.AddDays(7),
 				SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
 			};
-			var token = tokenHandler.CreateToken(tokenDescriptor);
-			return tokenHandler.WriteToken(token);
+			SecurityToken securityToken = tokenHandler.CreateToken(tokenDescriptor);
+			string tokenString = tokenHandler.WriteToken(securityToken);
+			Jwt token = new Jwt(securityToken.ValidTo, tokenString);
+			return token;
 		}
 	}
 }

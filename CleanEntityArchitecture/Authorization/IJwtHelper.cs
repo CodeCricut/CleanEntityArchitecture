@@ -4,6 +4,6 @@ namespace CleanEntityArchitecture.Authorization
 {
 	public interface IJwtHelper
 	{
-		string GenerateJwtToken(BaseUser user);
+		Jwt GenerateJwtToken(BaseUser user);
 	}
 }
