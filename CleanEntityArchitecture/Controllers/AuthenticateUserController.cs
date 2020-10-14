@@ -30,7 +30,7 @@ namespace CleanEntityArchitecture.Controllers
 			if (user == null) throw new Exception("Invalid username or password.");
 			// NotFoundException("Username or password is incorrect.");
 
-			return Ok(user);
+			return Ok();
 		}
 
 		[HttpGet("Me")]

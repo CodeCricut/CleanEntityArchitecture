@@ -98,6 +98,8 @@ in and getting the current user from the database. The defualt implementation is
 
 `IJwtService` and `JwtService` provide methods of generating JWTs based on a login model. This service does the heavy lifting of the `JwtController`.
 
+Registration of these services is required, but as you would expect.
+
 ### Controllers
 CRUD controllers implement `IWriteController<TEntity, TPostModel, TGetModel>` or
 `IReadController<TEntity, TGetModel>`. Some default behavior is provided by 
