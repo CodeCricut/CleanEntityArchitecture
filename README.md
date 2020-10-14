@@ -1,4 +1,4 @@
-﻿# CleanEntityArchitecutre
+﻿# CleanEntityArchitecture
 This library provides you with some boilerplate that will help you build rather complex
 CRUD APIs and web projects without having to worry about the tedious details.
 
@@ -21,16 +21,12 @@ The default services necessary to run this library can be registered in the `Con
 
 ## Architecture
 There are four major components that you must be aware of for any domain entity you wish to have CRUD control over:
-1. Domain objects
-	Domain objects are the objects which you store in your database, interact with, and allow users to read and write.
-2. Repositories
-	Repositories are solely responsible for interacting with the database through EF Core, but not for performing
+1. Domain Objects - the data objects which you store in your database, interact with, and allow users to read and write.
+2. Repositories - solely responsible for interacting with the database through EF Core, but not for performing
 business logic.
-3. Helper services
-	Helper services provide a buffer between the controllers and repositories that perform business logic and other things
+3. Helper services - provide a buffer between the controllers and repositories that perform business logic and other things
 that shouldn't be performed in controllers nor repositories.
-4. Controllers
-	Controllers are the highest abstraction in the application, and are responsible only for routing, model binding,
+4. Controllers - the highest abstraction in the application, and are responsible only for routing, model binding,
 	model validating, and calling the helper services.
 
 Controllers depend on helper services, helper services depend on repositories, and repositories act on domain objects.
@@ -38,6 +34,7 @@ If you have a `ReadNoteController` that inherits from `ReadController<Note, GetN
 registered services for
 * `IReadEntityService<Note, GetNoteModel>`
 * `IReadEntityRepository<Note>`
+
 and these objects
 * `Note : DomainEntity`
 * `GetNoteModel : GetModelDto`
@@ -46,13 +43,14 @@ In terms of the authentication pipeline, to have a `DefaultAuthenticateUserContr
 `AuthenticateUserController<GetUserModel, LoginModel>`, then you must also have registered services for
 * `IAuthenticateUserService<LoginModel, GetUserModel>`,
 * `IUserLoginrepository<LoginModel, User>`
+
 and these objects
 * `User : BaseUser`
 * `LoginModel`
 * `GetUserModel : GetModelDto`
 
 ### Domain
-Entities that in a `DbSet<TEntity>` must inherit from `DomainEntity`. This will provide them with an `Id` and `Deleted` property.
+Entities that are in a `DbSet<TEntity>` must inherit from `DomainEntity`. This will provide them with `Id` and `Deleted` properties.
 Entities are further split up into post and retrieve DTOs. You must have at least one of each for each entity, 
 inheriting from `PostModelDto` and `GetModelDto`, respectively.
 
@@ -98,13 +96,13 @@ to the database, or authentication, you can implement `ReadEntityService<TEntity
 You may choose to implement `IAuthenticateUserService<TLoginModel, TGetModel>`, which provides methods for logging
 in and getting the current user from the database. Because the methods of getting the current user vary so widely
 (from JWT to sessions to username and password), no default implementation is provided. An implentation
-that uses JWT is provided in the CleaNoteTaker repository.
+that uses JWT is provided in the CleanNoteTaker repository.
 
 ### Controllers
 CRUD controllers implement `IWriteController<TEntity, TPostModel, TGetModel>` or
 `IReadController<TEntity, TGetModel>`. Some default behavior is provided by 
 `WriteController<TEntity, TPostModel, TGetModel>` and `ReadController<TEntity, TGetModel>`, but these are abstract 
-because you must decorate each controller with a route attribute. For example, `[Route("api/Notes")].
+because you must decorate each controller with a route attribute. For example, `[Route("api/Notes")]`.
 
 Most actions on `WriteController` are decorated with `[Authorize]`. If you don't want to verify users are 
 authorized before calling those actions, you can override them and decorate them with `[Authorize(false)]`:
