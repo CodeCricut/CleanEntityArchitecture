@@ -2,7 +2,7 @@
 
 namespace CleanEntityArchitecture.Domain
 {
-	public abstract class BaseUser : DomainEntity
+	public class BaseUser : DomainEntity
 	{
 		[Required]
 		public string Username { get; set; }

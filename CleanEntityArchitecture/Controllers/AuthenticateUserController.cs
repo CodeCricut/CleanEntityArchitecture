@@ -34,7 +34,7 @@ namespace CleanEntityArchitecture.Controllers
 		}
 
 		[HttpGet("Me")]
-		[Authorize]
+		[JwtAuthorize]
 		public virtual async Task<ActionResult<TGetUserModel>> GetPrivateUserAsync()
 		{
 			var privateUser = await _userAuthService.GetAuthenticatedReturnModelAsync();

@@ -23,7 +23,7 @@ namespace CleanEntityArchitecture.Controllers
 		}
 
 		[HttpPost]
-		[Authorize]
+		[JwtAuthorize]
 		public virtual async Task<ActionResult<TGetModel>> PostAsync([FromBody] TPostModel postModel)
 		{
 			if (!ModelState.IsValid) throw new Exception();
@@ -35,7 +35,7 @@ namespace CleanEntityArchitecture.Controllers
 		}
 
 		[HttpPost("range")]
-		[Authorize]
+		[JwtAuthorize]
 		public virtual async Task<ActionResult> PostRangeAsync([FromBody] IEnumerable<TPostModel> postModels)
 		{
 			if (!ModelState.IsValid) throw new Exception();
@@ -47,7 +47,7 @@ namespace CleanEntityArchitecture.Controllers
 		}
 
 		[HttpPut("{key:int}")]
-		[Authorize]
+		[JwtAuthorize]
 		public virtual async Task<ActionResult<TGetModel>> Put(int key, [FromBody] TPostModel updateModel)
 		{
 			if (!ModelState.IsValid) throw new Exception();
@@ -60,7 +60,7 @@ namespace CleanEntityArchitecture.Controllers
 		}
 
 		[HttpDelete("{key:int}")]
-		[Authorize]
+		[JwtAuthorize]
 		public virtual async Task<ActionResult> Delete(int key)
 		{
 			if (!ModelState.IsValid) throw new Exception();

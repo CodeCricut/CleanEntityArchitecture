@@ -2,296 +2,145 @@
 This library provides you with some boilerplate that will help you build rather complex
 CRUD APIs and web projects without having to worry about the tedious details.
 
+Example project: [CleanNoteTaker](https://github.com/CodeCricut/CleanNoteTaker)
+
 ## Features
-JWT Authorization
-EF Core CRUD Repositories
-CRUD Controllers
-CRUD Helper Services
+* JWT Authorization
+* EF Core CRUD Repositories
+* CRUD Controllers
+* CRUD Helper Services
 
 ## Installation
 Unfortunately, as this is a library still being tested, you can only install it by cloning
 the repository:
 `git clone https://github.com/CodeCricut/CleanEntityArchitecture`
 
-### Setup
+## Setup
 The default services necessary to run this library can be registered in the `ConfigureServices` method of 
 `Startup.cs` with a call to `Services.ConfigureCleanEntityArchitecture(Configuration)`.
 
+## Architecture
+There are four major components that you must be aware of for any domain entity you wish to have CRUD control over:
+1. Domain objects
+	Domain objects are the objects which you store in your database, interact with, and allow users to read and write.
+2. Repositories
+	Repositories are solely responsible for interacting with the database through EF Core, but not for performing
+business logic.
+3. Helper services
+	Helper services provide a buffer between the controllers and repositories that perform business logic and other things
+that shouldn't be performed in controllers nor repositories.
+4. Controllers
+	Controllers are the highest abstraction in the application, and are responsible only for routing, model binding,
+	model validating, and calling the helper services.
+
+Controllers depend on helper services, helper services depend on repositories, and repositories act on domain objects.
+If you have a `ReadNoteController` that inherits from `ReadController<Note, GetNoteModel>`, then you must also have 
+registered services for
+* `IReadEntityService<Note, GetNoteModel>`
+* `IReadEntityRepository<Note>`
+and these objects
+* `Note : DomainEntity`
+* `GetNoteModel : GetModelDto`
+
+In terms of the authentication pipeline, to have a `DefaultAuthenticateUserController` that inherits from 
+`AuthenticateUserController<GetUserModel, LoginModel>`, then you must also have registered services for
+* `IAuthenticateUserService<LoginModel, GetUserModel>`,
+* `IUserLoginrepository<LoginModel, User>`
+and these objects
+* `User : BaseUser`
+* `LoginModel`
+* `GetUserModel : GetModelDto`
 
 ### Domain
-You may create an EF Core `DbContext` without utilizing the library, but any models in the
-`DbSet`s must be inherited from `DomainEntity`. This is mostly for generic constraint
-purposes, but also ensures that each entity has a `Id` and `Deleted` property.
+Entities that in a `DbSet<TEntity>` must inherit from `DomainEntity`. This will provide them with an `Id` and `Deleted` property.
+Entities are further split up into post and retrieve DTOs. You must have at least one of each for each entity, 
+inheriting from `PostModelDto` and `GetModelDto`, respectively.
 
-To keep things clean, you must separate each entity into three classes, each for a different
-purpose:
-* one inheriting from `DomainEntity`, which is you actual entity with the most properties in most cases.
-* one inheriting from `PostModelDto`, which contains the properties the users are allowed
-	to modify and create when posting or putting to a controller.
-* one inheriting from `GetModelDto`, which contains the properties you wish to expose through
-	the controller read actions.
+If you wish to integrate authentication and users into your application, you must use or implement `BaseUser` and
+`LoginModel`. You can also create a post and get model for registration and retrieval (extending `PostModelDto` and
+`GetModelDto`).
 
-If required, you may choose to include multiple post or get DTOs for each entity.
+For each entity, you must configure an AutoMapper profile that includes a map from `DomainEntity -> DomainEntity`,
+`PostModelDto -> DomainEntity`, `DomainEntity -> GetModelDto`
 
-Here is an example of a simple note entity, including the DTOs:
-```csharp
-public class Note : DomainEntity
-{
-	[Required]
-	public User User { get; set; }
-	[Required]
-	public string Title { get; set; }
-	[Required]
-	public string Text { get; set; }
-}
-
-public class PostNoteModel : PostModelDto
-{
-	public string Title { get; set; }
-	public string Text { get; set; }
-}
-
-public class GetNoteModel : GetModelDto
-{
-	public int Id { get; set; }
-
-	public int UserId { get; set; }
-	public string Title { get; set; }
-	public string Text { get; set; }
-}
-```
 ### Repositories
-To create a read repository for an entity, you can either inherit from `ReadEntityRepository<TEntity>` or
-implement `IReadEntityRepository<TEntity>`. 
+The familiar CRUD repository is split into read and write repositories, as you don't need to implement both if 
+you so choose.
 
-To create a write repository for an entity, you can either inherit from `WriteEntityRepository<TEntity> or
-implement `IWriteEntityRepository<TEntity>`.
+Most behavior is taken care of out of the box. You simply must implement or extend `IReadEntityRepository`, `ReadEntityRepository`;
+`IWriteEntityRepository`, and `WriteEntityRepository` as you see fit.
 
-```csharp
-public class ReadNoteRepository : ReadEntityRepository<Note>
-{
-	public ReadNoteRepository(DbContext context) : base(context)
-	{
-	}
-
-	public override IQueryable<Note> IncludeChildren(IQueryable<Note> queryable)
-	{
-		return queryable
-			.Include(n => n.User);
-	}
-}
-
-public class WriteNoteRepository : WriteEntityRepository<Note>
-{
-	public WriteNoteRepository(DbContext context) : base(context)
-	{
-	}
-}
-```
-
-You will be required to register these as services in the `ConfigureServiecs` method of `Startup.cs` on a
-per-entity basis:
+These must be registered as services on a per-entity basis.
 ```csharp
 servies.AddScoped<IReadEntityRepository<Note>, ReadNoteRepository>()
-		.AddScoped<IWriteEntityRepository<Note>, WriteNoteRepository>();
+		// You can use the generic WriteEntityRepository without inheriting from it.
+		.AddScoped<IWriteEntityRepository<Note>, WriteEntityRepository<Note>>();
 ```
 
+To facilitate retrieving a user given a login model, you can provide a service for `IUserLoginRepository<TLoginModel, TUser>`.
+A default service is provided, and you can simply register it if it is satisfactory:
+```csharp
+services.AddScoped<IUserLoginRepository<LoginModel, User>, UserLoginRepository<LoginModel, User>>();
+```
 ### Helper Services
-To separate concerns, most of the code not related to routing and model binding extracted out of the controllers
-and into helper services.
+Helper services implement `IReadEntityService<TEntity, TGetModel>` and `IWriteEntityService<TEntity, TPostModel>`.
 
-In order to use a read controller of a certain entity type, a read service helper must be registered of that type.
-The same goes for a write controller and write service helper.
-
-To create a read service helper, inherit from `ReadEntityService<TEntity, TGetModel>` or implement 
-`IReadEntityService<TEntity, TGetModel>`.
+Default helper service implementation is provided. You can simply register these services like this:
 ```csharp
-public class ReadNoteService : ReadEntityService<Note, GetNoteModel>
-{
-	public ReadNoteService(IMapper mapper, IReadEntityRepository<Note> readRepository) : base(mapper, readRepository)
-	{
-	}
-}
+services.AddScoped<IReadEntityService<Note, GetNoteModel>, ReadEntityService<Note, GetNoteModel>>()
+		.AddScoped<IWriteEntityService<Note, PostNoteModel>, WriteEntityService<Note, PostNoteModel>>();
 ```
 
-To create a write service helper, inherit from `WriteEntityService<TEntity, TPostModel>` or implement
-`IWriteEntityService<TEntity, TPostModel>`. 
-As with most public methods in this library, you can override any method in `WriteEntityService` if you need
-to add more buisness logic.
-```csharp
-public class WriteNoteService : WriteEntityService<Note, PostNoteModel>
-	{
-	private readonly IUserAuth<User> _userAuth;
+If you want to perform business logic, such as creating relationships between entities before saving them
+to the database, or authentication, you can implement `ReadEntityService<TEntity, TGetModel>` or 
+`WriteEntityService<TEntity, TPostModel>` and override the methods.
 
-	public WriteNoteService(IUserAuth<User> userAuth, IReadEntityRepository<Note> readNoteRepo, IWriteEntityRepository<Note> writeNoteRepo, IMapper mapper)
-		: base(mapper, writeNoteRepo, readNoteRepo)
-	{
-		_userAuth = userAuth;
-	}
-
-	public override async Task<TGetModel> PostEntityModelAsync<TGetModel>(PostNoteModel entityModel)
-	{
-		var user = await _userAuth.GetAuthenticatedUserAsync();
-
-		var entity = _mapper.Map<Note>(entityModel);
-		entity.User = user;
-
-		var addedEntity = await _writeRepo.AddEntityAsync(entity);
-		await _writeRepo.SaveChangesAsync();
-
-		return _mapper.Map<TGetModel>(addedEntity);
-	}
-}
-```
-
-You will be required to register these as services in the `ConfigureServices` method of `Startup.cs` on a
-per-entity basis:
-```csharp
-servies.AddScoped<IReadEntityService<Note>, ReadNoteService>()
-		.AddScoped<IWriteEntityService<Note>, WriteNoteService>();
-```
+You may choose to implement `IAuthenticateUserService<TLoginModel, TGetModel>`, which provides methods for logging
+in and getting the current user from the database. Because the methods of getting the current user vary so widely
+(from JWT to sessions to username and password), no default implementation is provided. An implentation
+that uses JWT is provided in the CleaNoteTaker repository.
 
 ### Controllers
-Default CRUD controllers are provided to facilitate routing and model binding.
+CRUD controllers implement `IWriteController<TEntity, TPostModel, TGetModel>` or
+`IReadController<TEntity, TGetModel>`. Some default behavior is provided by 
+`WriteController<TEntity, TPostModel, TGetModel>` and `ReadController<TEntity, TGetModel>`, but these are abstract 
+because you must decorate each controller with a route attribute. For example, `[Route("api/Notes")].
 
-Create a read controller by inheriting from `ReadController<TEntity, TGetEntityModel>` or implementing
-`IReadController<TEntity, TGetEntityModel>`.
-
-Create a write controller by inheriting from `WriteController<TEntity, TPostModel, TGetModel>` or implementing
-`IWriteController<TEntity, TPostModel, TGetModel>`.
-
-By default, the write controller actions are decorated with `[Authorize]`, but that can be overridden
-by overriding the action and decorating it with `[Authorize(false)]`. Likewise, the read actions can be 
-overridden and decorated with `[Authorize]`.
-
+Most actions on `WriteController` are decorated with `[Authorize]`. If you don't want to verify users are 
+authorized before calling those actions, you can override them and decorate them with `[Authorize(false)]`:
 ```csharp
-[Route("api/Notes")]
-public class ReadNoteController : ReadController<Note, GetNoteModel>
+[Authorize(false)]
+public override Task<ActionResult<GetNoteModel>> PostAsync([FromBody] PostNoteModel postModel)
 {
-	public ReadNoteController(IReadEntityService<Note, GetNoteModel> readService) : base(readService)
-	{
-		[Authorize]
-		public override Task<ActionResult<PagedList<GetNoteModel>>> GetAsync([FromQuery] PagingParams pagingParams)
-		{
-			return base.GetAsync(pagingParams);
-		}
-	}
-}
-
-[Route("api/Notes")]
-public class WriteNoteController : WriteController<Note, PostNoteModel, GetNoteModel>
-{
-	public WriteNoteController(IWriteEntityService<Note, PostNoteModel> writeService) : base(writeService)
-	{
-		[Authorize(false)]
-		public override Task<ActionResult<GetNoteModel>> PostAsync([FromBody] PostNoteModel postModel)
-		{
-			return base.PostAsync(postModel);
-		}
-	}
+	return base.PostAsync(postModel);
 }
 ```
 
-As with other API projects, controllers can be registered with `services.AddControllers()` and
+Conversely, most actions on `ReadController` are not decorated with `[Authorize]`, but can be by overriding them
+and decorating them manually:
+```csharp
+[Authorize]
+public override Task<ActionResult<PagedList<GetNoteModel>>> GetAsync([FromQuery] PagingParams pagingParams)
+{
+	return base.GetAsync(pagingParams);
+}
+```
+
+`IAuthenticateUserController<TGetUserModel, TLoginModel>` provides actions for logging in and getting the current
+user. 
+
+Controllers can be registered with `services.AddControllers()` and
 `app.UseEndpoints(endpoints => endpoints.MapControllers())`.
 
-## Authentication
-A number of services, controllers, and middleware are configured to make authentication a breeze.
-
-### User Domain
-Starting again with the domain, two classes are provided which can be used or inherited from.
-
-`BaseUser` should be inherited from by the user entity. For example,
-```csharp
-public class User : BaseUser
-{
-	public IEnumerable<Note> Notes { get; set; } = new List<Note>();
-}
-```
-
-This user class can still be made into a `DbSet` just like any other entity. It will be provided with 
-the properties of `DomainEntity` and `Username` and `Password`.
-
-`LoginModel` is used as a generic type constraint, and contains `Username` and `Password` properties.
-
-### UserLoginRepository
-To facilitary default login capability, the `UserLoginRepository` is used. You may inherit from this class,
-or implement `IUserLoginRepository` if custom login behavior is required. If not, then you simply need
-to register an `IUserLoginRepository<TLoginModel, TUser>` implementation as a service:
-
-`services.AddScoped<IUserLoginRepository<LoginModel, User>, UserLoginRepository<LoginModel, User>>()`
-
-### IAuthenticateUserService
-The `IAuthenticateUserService<TLoginModel, TGetModel>` provides two methods used mostly by the 
-authentication controller: 
-* `Task<TGetModel> LoginAsync(TLoginModel model)`
-* `Task<TGetModel> GetAuthenticatedReturnModelAsync()`
-
-A default implementation is not provided because behavior depends heavily on how authentication, but here
-is an example of how it could look if using a JWT approach:
-
-```csharp
-public class AuthenticateUserService : IAuthenticateUserService<LoginModel, GetUserModel>
-	{
-		private readonly IUserLoginRepository<LoginModel, User> _userLoginRepository;
-		private readonly IJwtHelper _jwtHelper;
-		private readonly IMapper _mapper;
-		private readonly IUserAuth<User> _userAuth;
-
-		public AuthenticateUserService(IUserLoginRepository<LoginModel, User> userLoginRepository, IJwtHelper jwtHelper,
-			 IMapper mapper, IUserAuth<User> userAuth)
-		{
-			_userLoginRepository = userLoginRepository;
-			_jwtHelper = jwtHelper;
-			_mapper = mapper;
-			_userAuth = userAuth;
-		}
-
-		public async Task<GetUserModel> GetAuthenticatedReturnModelAsync()
-		{
-			var user = await _userAuth.GetAuthenticatedUserAsync();
-
-			var token = _jwtHelper.GenerateJwtToken(user);
-
-			var privateReturnModel = _mapper.Map<GetUserModel>(user);
-
-			privateReturnModel.JwtToken = token;
-
-			return privateReturnModel;
-		}
-
-		public async Task<GetUserModel> LoginAsync(LoginModel model)
-		{
-			var user = await _userLoginRepository.GetUserByCredentialsAsync(model);
-
-			// return null if not found
-			if (user == null) return null;
-
-			// generate token if user found
-			var token = _jwtHelper.GenerateJwtToken(user);
-
-			var getModel = _mapper.Map<GetUserModel>(user);
-
-			getModel.JwtToken = token;
-
-			return getModel;
-		}
-	}
-```
-
-### Authentication Controllers
-You can inherit from `AuthenticateUserController` or implement `IAuthenticateUserController`. They contain
-login actions and actions for getting the authenticate user model.
-
-### Other Authorization Goodies
+### Authorization Goodies
 Other authorization related classes are in the `CleanEntityArchitecture.Authorization` namespace.
 
-The `AuthorizeAttribute` can be used to decorate controller classes or actions and require that incoming
+The `JwtAuthorizeAttribute` can be used to decorate controller classes or actions and require that incoming
 requests contain a valid JWT token authorization header. If so, the action will be run as normal. If not, 
 an unauthorized message will be returned.
 
 `JwtHelper`, which implements `IJwtHelper`, is simply used to generate a JWT token when provided with a
-`BaseUser`.
+`BaseUser`. The token will contain a `UserId` claim that can be extracted later to get the current user.
 
 `JwtMiddleware` parses a JWT authorization header (if present), and attaches the user id stored in it 
 to `HttpContext.Items["UserId"]`. In most cases, you will not need to access the user id through the context.
@@ -299,5 +148,16 @@ to `HttpContext.Items["UserId"]`. In most cases, you will not need to access the
 Instead, you may get the current user (with an ID == HttpContext.Items["UserId"]) by using 
 `IUserAuth.GetAuthenticatedUserAsync()`
 
-If a request makes it past an `[Authorize]` attribute, then you can safely assume that a valid user will
+If a request makes it past an `[JwtAuthorize]` attribute, then you can safely assume that a valid user will
 be returned by this method.
+
+You are required to provide a secret string in order to generate JWT tokens. Inside `appsettings.json`, add the 
+following branch:
+```json
+{
+	...
+	"JwtSettings": {
+		"JwtSecret":  "Example JWT Secret."
+	}
+}
+```

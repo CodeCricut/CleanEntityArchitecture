@@ -12,11 +12,11 @@ namespace CleanEntityArchitecture.Authorization
 	// They run in the following stages:
 	//		Authorization, Resource, Action, Exception, Result
 	[AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
-	public class AuthorizeAttribute : Attribute, IAuthorizationFilter
+	public class JwtAuthorizeAttribute : Attribute, IAuthorizationFilter
 	{
 		private readonly bool _authorize;
 
-		public AuthorizeAttribute(bool authorize = true)
+		public JwtAuthorizeAttribute(bool authorize = true)
 		{
 			_authorize = authorize;
 		}

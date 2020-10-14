@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CleanEntityArchitecture.Repository
 {
-	public abstract class WriteEntityRepository<TEntity> : IWriteEntityRepository<TEntity>
+	public class WriteEntityRepository<TEntity> : IWriteEntityRepository<TEntity>
 		where TEntity : DomainEntity
 	{
 		private readonly DbContext _context;
