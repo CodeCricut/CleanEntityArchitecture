@@ -93,10 +93,10 @@ If you want to perform business logic, such as creating relationships between en
 to the database, or authentication, you can implement `ReadEntityService<TEntity, TGetModel>` or 
 `WriteEntityService<TEntity, TPostModel>` and override the methods.
 
-You may choose to implement `IAuthenticateUserService<TLoginModel, TGetModel>`, which provides methods for logging
-in and getting the current user from the database. Because the methods of getting the current user vary so widely
-(from JWT to sessions to username and password), no default implementation is provided. An implentation
-that uses JWT is provided in the CleanNoteTaker repository.
+`IAuthenticateUserService<TLoginModel, TGetModel>` provides methods for logging
+in and getting the current user from the database. The defualt implementation is `AuthenticateUserService<TLoginModel, TGetModel>`.
+
+`IJwtService` and `JwtService` provide methods of generating JWTs based on a login model. This service does the heavy lifting of the `JwtController`.
 
 ### Controllers
 CRUD controllers implement `IWriteController<TEntity, TPostModel, TGetModel>` or
@@ -126,6 +126,9 @@ public override Task<ActionResult<PagedList<GetNoteModel>>> GetAsync([FromQuery]
 
 `IAuthenticateUserController<TGetUserModel, TLoginModel>` provides actions for logging in and getting the current
 user. 
+
+`IJwtController` provides an action for generating a JWT token based on a login model. This token can then be sent in the authorization header
+in further requests.
 
 Controllers can be registered with `services.AddControllers()` and
 `app.UseEndpoints(endpoints => endpoints.MapControllers())`.
